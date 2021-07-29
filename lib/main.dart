@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue, // ← よくわかんない
+        primarySwatch: Colors.orange, // ← よくわかんない
         // primaryColor: Colors.orange,
         // ↑ これでアプリ全体の色が変わるよ
       ),
@@ -42,8 +42,12 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  final TextEditingController _fieldText = TextEditingController(text: '');
+
   @override
   Widget build(BuildContext context) {
+    final _focusNode = FocusNode();
+
     // ChangeNotifierBuilder: なんかstatelessでもstatefulにしてくれるやつ
     return ChangeNotifierProvider(
       // 下のやつで、MyHomePageが回ったタイミングでgetItemListが実行される
@@ -61,25 +65,29 @@ class MyHomePage extends StatelessWidget {
             // なんかインデントおかしいね 自動整型なのに～
             Consumer<MainModel>(builder: (context, model, child) {
               return TextField(
-                  textInputAction: TextInputAction.none,
-                  decoration: InputDecoration(
-                    labelText: "在庫を追加", // ラベル
-                    hintText: "例) シャンプーの詰め替え", // ヒント
-                  ),
-                  onChanged: (text) {
-                    // テキストフォームに入力されたテキスト(text)を
-                    // main_model.dartのMainModelクラス内で予め用意しといた
-                    // 空の文字列だったitemTextに挿入
-                    model.itemText = text;
-                  },
-                  // Enterキーを押すことでアイテムを登録できる
-                  onSubmitted: (value) async {
-                    try {
-                      await model.addItem();
-                    } catch (e) {
-                      await _showDialog(context, e.toString());
-                    }
-                  });
+                controller: _fieldText,
+                decoration: InputDecoration(
+                  labelText: "在庫を追加", // ラベル
+                  hintText: "例) シャンプーの詰め替え", // ヒント
+                ),
+                onChanged: (text) {
+                  // テキストフォームに入力されたテキスト(text)を
+                  // main_model.dartのMainModelクラス内で予め用意しといた
+                  // 空の文字列だったitemTextに挿入
+                  model.itemText = text;
+                },
+                focusNode: _focusNode, // フォーカス用の値
+                // Enterキーを押すことでアイテムを登録できる
+                onSubmitted: (value) async {
+                  try {
+                    await model.addItem();
+                    _fieldText.clear(); // テキストフォームのテキストを消す ※バグ！
+                    _focusNode.requestFocus(); // フォーカスを再び渡す
+                  } catch (e) {
+                    await _showDialog(context, e.toString());
+                  }
+                },
+              );
             }),
             // 登録ボタン
             Consumer<MainModel>(builder: (context, model, child) {
@@ -92,10 +100,11 @@ class MyHomePage extends StatelessWidget {
                 onPressed: () async {
                   // タップされたときの動作
                   // モデルを参照する
-                  //(model.addItem → main_model.dartのMainModelクラスのaddItem()関数)
+                  // (model.addItem → main_model.dartのMainModelクラスのaddItem()関数)
                   // Firestoreにデータを追加する
                   try {
                     await model.addItem();
+                    _fieldText.clear();
                   } catch (e) {
                     await _showDialog(context, e.toString());
                   }
