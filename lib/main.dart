@@ -61,6 +61,7 @@ class MyHomePage extends StatelessWidget {
             // なんかインデントおかしいね 自動整型なのに～
             Consumer<MainModel>(builder: (context, model, child) {
               return TextField(
+                  textInputAction: TextInputAction.none,
                   decoration: InputDecoration(
                     labelText: "在庫を追加", // ラベル
                     hintText: "例) シャンプーの詰め替え", // ヒント
@@ -70,6 +71,14 @@ class MyHomePage extends StatelessWidget {
                     // main_model.dartのMainModelクラス内で予め用意しといた
                     // 空の文字列だったitemTextに挿入
                     model.itemText = text;
+                  },
+                  // Enterキーを押すことでアイテムを登録できる
+                  onSubmitted: (value) async {
+                    try {
+                      await model.addItem();
+                    } catch (e) {
+                      await _showDialog(context, e.toString());
+                    }
                   });
             }),
             // 登録ボタン
@@ -88,7 +97,7 @@ class MyHomePage extends StatelessWidget {
                   try {
                     await model.addItem();
                   } catch (e) {
-                    print(e.toString());
+                    await _showDialog(context, e.toString());
                   }
                 },
               );
@@ -115,6 +124,24 @@ class MyHomePage extends StatelessWidget {
               return Flexible(child: ListView(children: listTiles));
             }),
           ])),
+    );
+  }
+
+  Future _showDialog(BuildContext context, String title) async {
+    await showDialog<int>(
+      context: context,
+      barrierDismissible: true, // OK押さなくても画面外を押せば消える
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
     );
   }
 }
