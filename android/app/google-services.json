@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "241585492429",
+    "project_id": "tobuy-app",
+    "storage_bucket": "tobuy-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241585492429:android:64eece3617011f0517f484",
+        "android_client_info": {
+          "package_name": "com.example.tobuy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241585492429-736suo72p3k1ijpjeuu7c4gdbh3568ru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaMixDebS5siqCFUXn0sAItunc2_jVYdg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241585492429-736suo72p3k1ijpjeuu7c4gdbh3568ru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
