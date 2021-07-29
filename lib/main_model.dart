@@ -8,6 +8,7 @@ class MainModel extends ChangeNotifier {
   List<Item> itemList = [];
 
   // addItem()で使うやつ
+  // テキストフォームに入力されたテキストを格納する用の変数
   String itemText = '';
 
   // Qiitaの記事におけるfetchBooks()の役割
@@ -17,14 +18,15 @@ class MainModel extends ChangeNotifier {
     // Firestore → FirebaseFirestore
     // getDocuments() → get()
     // documents → docs
-    // に変更されてます
+    // に変更されてます のでQiitaのとはちょっと違うよ
     final docs = await FirebaseFirestore.instance.collection('itemList').get();
     final itemList = docs.docs.map((doc) => Item(doc)).toList();
     this.itemList = itemList;
 
     // notifyListeners()を呼び出すことで、
-    // main.dartのConsumer以下が発火して、再描画される(らしい)
+    // main.dartのConsumer以下が発火して、アプリのページが再描画される(らしい)
     // これでStatelessWidgetで書いたものがStatefulWidgetモドキになる
+    // 逆にいうと、ページ内で変化があってもこれ呼び出さないと何も変わらない
     notifyListeners();
   }
 
@@ -36,5 +38,11 @@ class MainModel extends ChangeNotifier {
     if (itemText.isEmpty) {
       throw ('入力してください');
     }
+
+    final docs = FirebaseFirestore.instance.collection('itemList');
+    await docs.add({
+      'title': itemText,
+      'createdAt': Timestamp.now(),
+    });
   }
 }

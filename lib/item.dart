@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // 型とか変数の最後に「?」とか「!」とか付いてるけど
 // なんか最近Dartのアプデがあったらしくて
-// Null safetyってのが追加されたらしい
-// なんか赤下線で怒られたらつける程度の認識です
+// Null safetyってのが追加されたらしい(しらべてね)
+// なんか赤下線で怒られたらどっちかつける程度の認識です
 
 // Firebaseのデータを格納するクラスを作る
 class Item {
@@ -16,5 +16,5 @@ class Item {
 
   // Itemに含まれる内容
   String? title;
-  DateTime? createdAt; // DateTimeでソートしたい
+  DateTime? createdAt; // 登録された時間でソートしたいため
 }

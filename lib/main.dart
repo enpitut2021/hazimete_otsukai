@@ -46,6 +46,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // ChangeNotifierBuilder: なんかstatelessでもstatefulにしてくれるやつ
     return ChangeNotifierProvider(
+      // 下のやつで、MyHomePageが回ったタイミングでgetItemListが実行される
       create: (context) => MainModel()..getItemList(),
       child: Scaffold(
           appBar: AppBar(
@@ -81,7 +82,7 @@ class MyHomePage extends StatelessWidget {
                     primary: Colors.red, onPrimary: Colors.grey[200]),
                 onPressed: () {
                   // タップされたときの動作
-                  // モデル参照
+                  // モデルを参照する
                   //(model.addItem → main_model.dartのMainModelクラスのaddItem()関数)
                   // Firestoreにデータを追加する
                   model.addItem();
@@ -103,6 +104,7 @@ class MyHomePage extends StatelessWidget {
                         title: Text(item.title!),
                       ))
                   // 完成した複数のListTile(...)を.toList()でリストに変換する
+                  // (ListTileを束ねる)
                   // ListView(children: ★) ← ★はリストになる必要があるから
                   .toList();
               // リストに変換されたlistTilesをListViewで描画
