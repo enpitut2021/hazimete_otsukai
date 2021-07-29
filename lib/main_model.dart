@@ -30,6 +30,21 @@ class MainModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void getItemListRealtime() {
+    final snapshots =
+        FirebaseFirestore.instance.collection('itemList').snapshots();
+    // pythonでいうとfor snpashot in snapshots みたいな感じ
+    // snapshotsがデータの流れ(Stream型)。
+    // データの流れからそれぞれのデータを1個1個取り出して、{}内の処理を行う
+    // forの代わりにlistenってやってると思えばいいかも？
+    snapshots.listen((snapshot) {
+      final itemList = snapshot.docs.map((doc) => Item(doc)).toList();
+      itemList.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      this.itemList = itemList;
+      notifyListeners();
+    });
+  }
+
   // FirebaseのFirestoreにデータを書き込む
   Future addItem() async {
     // 追加するときなんも書かなかったらエラーをthrowする
@@ -44,5 +59,9 @@ class MainModel extends ChangeNotifier {
       'title': itemText,
       'createdAt': Timestamp.now(),
     });
+  }
+
+  Future reload() async {
+    notifyListeners();
   }
 }

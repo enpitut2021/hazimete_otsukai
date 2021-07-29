@@ -47,7 +47,7 @@ class MyHomePage extends StatelessWidget {
     // ChangeNotifierBuilder: なんかstatelessでもstatefulにしてくれるやつ
     return ChangeNotifierProvider(
       // 下のやつで、MyHomePageが回ったタイミングでgetItemListが実行される
-      create: (context) => MainModel()..getItemList(),
+      create: (context) => MainModel()..getItemListRealtime(),
       child: Scaffold(
           appBar: AppBar(
             title: Text('在庫'),
@@ -80,12 +80,16 @@ class MyHomePage extends StatelessWidget {
                 child: const Text("とうろく"),
                 style: ElevatedButton.styleFrom(
                     primary: Colors.red, onPrimary: Colors.grey[200]),
-                onPressed: () {
+                onPressed: () async {
                   // タップされたときの動作
                   // モデルを参照する
                   //(model.addItem → main_model.dartのMainModelクラスのaddItem()関数)
                   // Firestoreにデータを追加する
-                  model.addItem();
+                  try {
+                    await model.addItem();
+                  } catch (e) {
+                    print(e.toString());
+                  }
                 },
               );
             }),
