@@ -6,7 +6,6 @@
 // (next_page_model.dart的な)
 
 // Firebase有効化
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // マテリアルデザイン(Android風UI)が使えるようになる
@@ -15,9 +14,11 @@ import 'package:flutter/material.dart';
 
 // ChangeNotifierProviderとConsumerウィジェットが使えるようになる
 import 'package:provider/provider.dart';
+import 'package:tobuy/signup_page.dart';
 import 'package:tobuy/tobuy_page.dart';
 
 // main_model.dartで定義したクラス有効化
+import 'login_page.dart';
 import 'main_model.dart';
 
 import 'tobuy_page.dart';
@@ -36,11 +37,60 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.cyan, // 全体のテーマ色が変わる
+        primarySwatch: Colors.blue, // 全体のテーマ色が変わる
         // primaryColor: Colors.orange,
         // ↑ これでアプリ全体の色が変わるよ
       ),
-      home: DefaultTabController(length: choices.length, child: MyHomePage()),
+      home: EntrancePage(),
+    );
+  }
+}
+
+class EntrancePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(child: Image.asset('images/Logo_t6.png'), width: 300),
+            SizedBox(height: 60),
+            SizedBox(
+                width: 300,
+                height: 50,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.blue[50]),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                    },
+                    child: Text(
+                      'ログイン',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ))),
+            SizedBox(height: 10),
+            SizedBox(
+                width: 300,
+                height: 50,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.blue[50]),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignupPage()),
+                      );
+                    },
+                    child: Text(
+                      '新規登録',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ))),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -49,32 +99,34 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ChangeNotifierBuilder: なんかstatelessでもstatefulにしてくれるやつ
-    return ChangeNotifierProvider(
-      // 下のやつで、MyHomePageが回ったタイミングでgetItemListRealtimeが実行される
-      create: (context) => MainModel()..getItemListRealtime(),
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'TOBUY',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            centerTitle: true, // appBarのテキストが中央揃えになる
-            bottom: TabBar(
-              tabs: choices
-                  .map((choice) => Tab(
-                        text: choice.title,
-                      ))
-                  .toList(),
-            ),
-          ),
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [StoragePage(), ToBuyPage()],
-          )
-          // Consumerの下ならmodelファイルを参照できるらしい
-          // (この場合main_model.dartのMainModelクラス)
-          ),
-    );
+    return DefaultTabController(
+        length: choices.length,
+        child: ChangeNotifierProvider(
+          // 下のやつで、MyHomePageが回ったタイミングでgetItemListRealtimeが実行される
+          create: (context) => MainModel()..getItemListRealtime(),
+          child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  'TOBUY',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                centerTitle: true, // appBarのテキストが中央揃えになる
+                bottom: TabBar(
+                  tabs: choices
+                      .map((choice) => Tab(
+                            text: choice.title,
+                          ))
+                      .toList(),
+                ),
+              ),
+              body: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                children: [StoragePage(), ToBuyPage()],
+              )
+              // Consumerの下ならmodelファイルを参照できるらしい
+              // (この場合main_model.dartのMainModelクラス)
+              ),
+        ));
   }
 }
 
