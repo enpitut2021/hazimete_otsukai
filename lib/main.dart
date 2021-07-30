@@ -6,6 +6,7 @@
 // (next_page_model.dart的な)
 
 // Firebase有効化
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // マテリアルデザイン(Android風UI)が使えるようになる
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red, // 全体のテーマ色が変わる
+        primarySwatch: Colors.cyan, // 全体のテーマ色が変わる
         // primaryColor: Colors.orange,
         // ↑ これでアプリ全体の色が変わるよ
       ),
@@ -154,6 +155,8 @@ class StoragePage extends StatelessWidget {
             // の形式に割り当てていく
             .map((item) => ListTile(
                   title: Text(item.title!),
+                  trailing:
+                      Icon(Icons.circle, color: iconColor(item.createdAt!)),
                 ))
             // 完成した複数のListTile(...)を.toList()でリストに変換する
             // (ListTileを束ねる)
@@ -209,6 +212,19 @@ class StoragePage extends StatelessWidget {
         );
       },
     );
+  }
+
+  MaterialAccentColor iconColor(DateTime timestamp) {
+    final Duration difference = DateTime.now().difference(timestamp);
+    final int sec = difference.inSeconds;
+
+    if (sec <= 60 * 60 * 24 * 3) {
+      return Colors.greenAccent;
+    } else if (sec <= 60 * 60 * 24 * 7) {
+      return Colors.amberAccent;
+    } else {
+      return Colors.redAccent;
+    }
   }
 }
 
