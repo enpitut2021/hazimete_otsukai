@@ -9,7 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Item {
   // これぼくも正直よくわからんです
   Item(DocumentSnapshot? doc) {
-    title = doc!['title'];
+    documentID = doc!.id;
+    title = doc['title'];
     final Timestamp timestamp = doc['createdAt'];
     createdAt = timestamp.toDate();
   }
@@ -17,4 +18,5 @@ class Item {
   // Itemに含まれる内容
   String? title;
   DateTime? createdAt; // 登録された時間でソートしたいため
+  String? documentID;
 }

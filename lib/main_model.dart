@@ -65,3 +65,10 @@ class MainModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+Future deleteItem(Item item) async {
+  await FirebaseFirestore.instance
+      .collection('itemList')
+      .doc(item.documentID)
+      .delete();
+}
