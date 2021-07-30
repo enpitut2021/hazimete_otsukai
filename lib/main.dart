@@ -67,6 +67,7 @@ class MyHomePage extends StatelessWidget {
             ),
           ),
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [StoragePage(), ToBuyPage()],
           )
           // Consumerの下ならmodelファイルを参照できるらしい
@@ -88,8 +89,8 @@ class StoragePage extends StatelessWidget {
         return TextField(
           controller: _fieldText,
           decoration: InputDecoration(
-            labelText: "　在庫を追加", // ラベル
-            hintText: "　例) 醤油", // ヒント
+            labelText: "在庫を追加", // ラベル
+            hintText: "例) 醤油", // ヒント
           ),
           onChanged: (text) {
             // テキストフォームに入力されたテキスト(text)を
@@ -181,6 +182,7 @@ class StoragePage extends StatelessWidget {
                         color: Colors.redAccent,
                         child: Icon(Icons.clear, color: Colors.white)),
                     onDismissed: (direction) {
+                      addToBuy(itemList[index]);
                       // 以下に消す処理を作成
                       deleteItem(itemList[index]);
                     },

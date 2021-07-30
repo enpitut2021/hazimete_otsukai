@@ -11,7 +11,7 @@ class ToBuyPage extends StatelessWidget {
     final _focusNode = FocusNode();
 
     return ChangeNotifierProvider(
-        create: (context) => ToBuyModel(),
+        create: (context) => ToBuyModel()..getToBuyListRealtime(),
         child:
             // Scaffold(
             //     appBar: AppBar(
@@ -35,17 +35,17 @@ class ToBuyPage extends StatelessWidget {
               controller: _fieldText,
               decoration: InputDecoration(
                 labelText: "買うものを追加",
-                hintText: "　例) シャンプーの詰め替え",
+                hintText: "例) シャンプーの詰め替え",
               ),
               onChanged: (text) {
-                model.itemText = text;
+                model.toBuyText = text;
               },
               focusNode: _focusNode,
               onSubmitted: (value) async {
                 try {
-                  await model.addItem();
+                  await model.addToBuy();
                   _fieldText.clear();
-                  model.itemText = '';
+                  model.toBuyText = '';
                   _focusNode.requestFocus();
                 } catch (e) {
                   await _showDialog(context, e.toString());
@@ -57,8 +57,8 @@ class ToBuyPage extends StatelessWidget {
             height: 10,
           ),
           Consumer<ToBuyModel>(builder: (context, model, child) {
-            final itemList = model.itemList;
-            final listTiles = itemList
+            final toBuyList = model.toBuyList;
+            final listTiles = toBuyList
                 .map((item) => ListTile(
                       title: Text(item.title!),
                     ))
@@ -66,9 +66,9 @@ class ToBuyPage extends StatelessWidget {
             return Flexible(
                 child: ListView.separated(
                     separatorBuilder: (context, index) => Divider(),
-                    itemCount: itemList.length,
+                    itemCount: toBuyList.length,
                     itemBuilder: (context, index) {
-                      if (index == itemList.length) {
+                      if (index == toBuyList.length) {
                         return const Divider(
                           height: 1,
                         );
@@ -80,7 +80,7 @@ class ToBuyPage extends StatelessWidget {
                             color: Colors.redAccent,
                             child: Icon(Icons.clear, color: Colors.white)),
                         onDismissed: (direction) {
-                          deleteItem(itemList[index]);
+                          deleteToBuy(toBuyList[index]);
                         },
                       );
                     }));

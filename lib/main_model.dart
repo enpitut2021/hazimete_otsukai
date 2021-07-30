@@ -72,3 +72,10 @@ Future deleteItem(Item item) async {
       .doc(item.documentID)
       .delete();
 }
+
+Future addToBuy(Item item) async {
+  await FirebaseFirestore.instance.collection('toBuyList').add({
+    'title': item.title,
+    'createdAt': Timestamp.now(),
+  });
+}

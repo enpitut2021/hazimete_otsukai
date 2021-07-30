@@ -4,37 +4,29 @@ import 'package:flutter/material.dart';
 import 'item.dart';
 
 class ToBuyModel extends ChangeNotifier {
-  List<Item> itemList = [];
+  List<Item> toBuyList = [];
 
-  String itemText = '';
+  String toBuyText = '';
 
-  Future getItemList() async {
-    final docs = await FirebaseFirestore.instance.collection('itemList').get();
-    final itemList = docs.docs.map((doc) => Item(doc)).toList();
-    this.itemList = itemList;
-
-    notifyListeners();
-  }
-
-  void getItemListRealtime() {
+  void getToBuyListRealtime() {
     final snapshots =
-        FirebaseFirestore.instance.collection('itemList').snapshots();
+        FirebaseFirestore.instance.collection('toBuyList').snapshots();
     snapshots.listen((snapshot) {
-      final itemList = snapshot.docs.map((doc) => Item(doc)).toList();
-      itemList.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
-      this.itemList = itemList;
+      final toBuyList = snapshot.docs.map((doc) => Item(doc)).toList();
+      toBuyList.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      this.toBuyList = toBuyList;
       notifyListeners();
     });
   }
 
-  Future addItem() async {
-    if (itemText.isEmpty) {
+  Future addToBuy() async {
+    if (toBuyText.isEmpty) {
       throw ('入力してください');
     }
 
-    final docs = FirebaseFirestore.instance.collection('itemList');
+    final docs = FirebaseFirestore.instance.collection('toBuyList');
     await docs.add({
-      'title': itemText,
+      'title': toBuyText,
       'createdAt': Timestamp.now(),
     });
   }
@@ -44,9 +36,9 @@ class ToBuyModel extends ChangeNotifier {
   }
 }
 
-Future deleteItem(Item item) async {
+Future deleteToBuy(Item item) async {
   await FirebaseFirestore.instance
-      .collection('itemList')
+      .collection('toBuyList')
       .doc(item.documentID)
       .delete();
 }
