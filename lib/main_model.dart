@@ -90,5 +90,6 @@ class MainModel extends ChangeNotifier {
     if (pickedFile != null) {
       image = File(pickedFile.path);
     }
+    notifyListeners();
   }
 }

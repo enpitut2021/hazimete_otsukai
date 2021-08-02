@@ -6,7 +6,6 @@
 // (next_page_model.dart的な)
 
 // Firebase有効化
-
 import 'package:firebase_core/firebase_core.dart';
 
 // マテリアルデザイン(Android風UI)が使えるようになる
@@ -15,6 +14,7 @@ import 'package:flutter/material.dart';
 
 // ChangeNotifierProviderとConsumerウィジェットが使えるようになる
 import 'package:provider/provider.dart';
+import 'package:tobuy/page/ReaderMenuPage.dart';
 import 'package:tobuy/signup_page.dart';
 import 'package:tobuy/tobuy_page.dart';
 
@@ -122,8 +122,14 @@ class MyHomePage extends StatelessWidget {
                 actions: <Widget>[
                   Consumer<MainModel>(builder: (context, model, child) {
                     return TextButton(
-                        onPressed: () {
-                          model.getImage();
+                        onPressed: () async {
+                          // await model.getImage();
+                          // await _showImageDialog(context, model.image);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ReaderMenuPage()),
+                          );
                         },
                         child: Icon(
                           Icons.add_a_photo,
@@ -141,6 +147,24 @@ class MyHomePage extends StatelessWidget {
               ),
         ));
   }
+
+  // Future _showImageDialog(BuildContext context, File imageFile) async {
+  //   await showDialog<int>(
+  //     context: context,
+  //     barrierDismissible: true, // OK押さなくても画面外を押せば消える
+  //     builder: (BuildContext context) {
+  //       return Dialog(
+  //         child: Container(
+  //           width: 200,
+  //           height: 200,
+  //           decoration: BoxDecoration(
+  //               image: DecorationImage(
+  //                   image: FileImage(imageFile), fit: BoxFit.cover)),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
 
 class StoragePage extends StatelessWidget {
