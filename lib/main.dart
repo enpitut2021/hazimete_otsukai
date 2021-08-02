@@ -6,6 +6,7 @@
 // (next_page_model.dart的な)
 
 // Firebase有効化
+
 import 'package:firebase_core/firebase_core.dart';
 
 // マテリアルデザイン(Android風UI)が使えるようになる
@@ -118,6 +119,18 @@ class MyHomePage extends StatelessWidget {
                           ))
                       .toList(),
                 ),
+                actions: <Widget>[
+                  Consumer<MainModel>(builder: (context, model, child) {
+                    return TextButton(
+                        onPressed: () {
+                          model.getImage();
+                        },
+                        child: Icon(
+                          Icons.add_a_photo,
+                          color: Colors.white,
+                        ));
+                  }),
+                ],
               ),
               body: TabBarView(
                 physics: NeverScrollableScrollPhysics(),
@@ -142,7 +155,7 @@ class StoragePage extends StatelessWidget {
         return TextField(
           controller: _fieldText,
           decoration: InputDecoration(
-            labelText: "在庫を追加", // ラベル
+            labelText: "　在庫を追加", // ラベル
             hintText: "例) 醤油", // ヒント
           ),
           onChanged: (text) {
@@ -237,9 +250,9 @@ class StoragePage extends StatelessWidget {
                         color: Colors.redAccent,
                         child: Icon(Icons.clear, color: Colors.white)),
                     onDismissed: (direction) {
-                      addToBuy(itemList[index]);
+                      model.addToBuy(itemList[index]);
                       // 以下に消す処理を作成
-                      deleteItem(itemList[index]);
+                      model.deleteItem(itemList[index]);
                     },
                   );
                 }));

@@ -1,8 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tobuy">
+    <queries>
+      <intent>
+           <action android:name="android.media.action.IMAGE_CAPTURE" />
+      </intent>
+    </queries>
    <application
         android:label="tobuy"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

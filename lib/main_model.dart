@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'item.dart';
 
@@ -64,18 +67,28 @@ class MainModel extends ChangeNotifier {
   Future reload() async {
     notifyListeners();
   }
-}
 
-Future deleteItem(Item item) async {
-  await FirebaseFirestore.instance
-      .collection('itemList')
-      .doc(item.documentID)
-      .delete();
-}
+  Future deleteItem(Item item) async {
+    await FirebaseFirestore.instance
+        .collection('itemList')
+        .doc(item.documentID)
+        .delete();
+  }
 
-Future addToBuy(Item item) async {
-  await FirebaseFirestore.instance.collection('toBuyList').add({
-    'title': item.title,
-    'createdAt': Timestamp.now(),
-  });
+  Future addToBuy(Item item) async {
+    await FirebaseFirestore.instance.collection('toBuyList').add({
+      'title': item.title,
+      'createdAt': Timestamp.now(),
+    });
+  }
+
+  File image = File('');
+
+  Future getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+    }
+  }
 }

@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tobuy/tobuy_model.dart';
@@ -34,7 +33,7 @@ class ToBuyPage extends StatelessWidget {
             return TextField(
               controller: _fieldText,
               decoration: InputDecoration(
-                labelText: "買うものを追加",
+                labelText: "　買うものを追加",
                 hintText: "例) シャンプーの詰め替え",
               ),
               onChanged: (text) {
