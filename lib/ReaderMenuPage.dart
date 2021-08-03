@@ -110,47 +110,81 @@ class ReaderMenuState extends State<ReaderMenuPage> {
       create: (context) => MainModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('レシート読み取り'),
-        ),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
+            title: Row(children: [
+          Text('レシート読み取り'),
+          SizedBox(
+            width: 2,
+          ),
+          Icon(Icons.receipt_long_outlined),
+        ])),
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                if (_image != null)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 300,
+                      child: Card(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.file(
+                            _image!,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, bottom: 8.0),
+                    child: SizedBox(
+                        width: double.infinity,
+                        height: 250,
+                        // OCR（テキスト検索）の結果をスクロール表示できるようにするため
+                        // 結果表示部分をSingleChildScrollViewでラップ
+                        child: Card(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(() {
+                                  // OCR（テキスト認識）の結果（_result）を取得したら表示
+                                  if (_result != null) {
+                                    // null safety対応のため_result!とする（_resultはnullにならない）
 
-            // 写真のサイズによって画面はみ出しエラーが生じるのを防ぐため、
-            // Columnの上にもSingleChildScrollViewをつける
-            child: SingleChildScrollView(
-              child: Column(children: [
-                // 画像を取得できたら表示
-                // null safety対応のため_image!とする（_imageはnullにならない）
-                if (_image != null) Image.file(_image!, height: 400),
-
-                Container(
-                    height: 240,
-
-                    // OCR（テキスト検索）の結果をスクロール表示できるようにするため
-                    // 結果表示部分をSingleChildScrollViewでラップ
-                    child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Consumer<MainModel>(
-                            builder: (context, model, child) {
-                          return Text(() {
-                            // OCR（テキスト認識）の結果（_result）を取得したら表示
-                            if (_result != null) {
-                              // null safety対応のため_result!とする（_resultはnullにならない）
-                              print(_result!.trim().split("\n"));
-                              List<String> receiptItemList =
-                                  _result!.trim().split("\n");
-                              receiptItemList.forEach((element) {
-                                model.itemText = element;
-                                model.addItem();
-                              });
-                              return _result!.trim();
-                            } else {
-                              return 'レシートを撮影または読み込んでください';
-                            }
-                          }());
-                        }))),
-              ]),
+                                    return _result!.trim();
+                                  } else {
+                                    return 'レシートを撮影または読み込んでください';
+                                  }
+                                }()),
+                              ),
+                            ),
+                          ),
+                        ))),
+                if (_result != null)
+                  Consumer<MainModel>(builder: (context, model, child) {
+                    return ElevatedButton(
+                        onPressed: () {
+                          List<String> receiptItemList =
+                              _result!.trim().split("\n");
+                          if (receiptItemList[0] == '読み取りエラーです') {
+                          } else {
+                            receiptItemList.forEach((element) {
+                              model.itemText = element;
+                              model.addItem();
+                            });
+                          }
+                          Navigator.pop(context);
+                        },
+                        child: Text('完了'));
+                  }),
+              ],
             ),
           ),
         ),

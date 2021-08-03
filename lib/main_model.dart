@@ -82,6 +82,13 @@ class MainModel extends ChangeNotifier {
     });
   }
 
+  Future addSpecificItem(Item item) async {
+    await FirebaseFirestore.instance.collection('itemList').add({
+      'title': item.title,
+      'createdAt': Timestamp.now(),
+    });
+  }
+
   File image = File('');
 
   Future getImage() async {
@@ -91,5 +98,12 @@ class MainModel extends ChangeNotifier {
       image = File(pickedFile.path);
     }
     notifyListeners();
+  }
+
+  Future deleteToBuy(Item item) async {
+    await FirebaseFirestore.instance
+        .collection('toBuyList')
+        .doc(item.documentID)
+        .delete();
   }
 }

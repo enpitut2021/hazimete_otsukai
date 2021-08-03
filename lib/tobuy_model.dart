@@ -34,11 +34,11 @@ class ToBuyModel extends ChangeNotifier {
   Future reload() async {
     notifyListeners();
   }
-}
 
-Future deleteToBuy(Item item) async {
-  await FirebaseFirestore.instance
-      .collection('toBuyList')
-      .doc(item.documentID)
-      .delete();
+  Future deleteToBuy(Item item) async {
+    await FirebaseFirestore.instance
+        .collection('toBuyList')
+        .doc(item.documentID)
+        .delete();
+  }
 }

@@ -79,7 +79,7 @@ class ToBuyPage extends StatelessWidget {
                             color: Colors.redAccent,
                             child: Icon(Icons.clear, color: Colors.white)),
                         onDismissed: (direction) {
-                          deleteToBuy(toBuyList[index]);
+                          model.deleteToBuy(toBuyList[index]);
                         },
                       );
                     }));

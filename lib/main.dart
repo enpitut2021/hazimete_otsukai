@@ -271,12 +271,39 @@ class StoragePage extends StatelessWidget {
                     // これはなんかしらん
                     key: UniqueKey(),
                     background: Container(
+                        color: Colors.greenAccent,
+                        child: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        )),
+                    secondaryBackground: Container(
                         color: Colors.redAccent,
                         child: Icon(Icons.clear, color: Colors.white)),
+
                     onDismissed: (direction) {
-                      model.addToBuy(itemList[index]);
-                      // 以下に消す処理を作成
-                      model.deleteItem(itemList[index]);
+                      // 右スワイプ
+                      if (direction == DismissDirection.startToEnd) {
+                        model.addToBuy(itemList[index]);
+                        // 以下に消す処理を作成
+                        model.deleteItem(itemList[index]);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('TOBUYリストに移動しました'),
+                          //     action: SnackBarAction(
+                          //       label: 'Undo',
+                          //       onPressed: () {
+                          //         model.addSpecificItem(itemList[index]);
+                          //         model.deleteToBuy(itemList[index]);
+                          //       },
+                          //     )
+                        ));
+                      } else {
+                        model.deleteItem(itemList[index]);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('削除しました'),
+                          //
+                          // )
+                        ));
+                      }
                     },
                   );
                 }));
