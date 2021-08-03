@@ -24,6 +24,7 @@ class ReaderMenuPage extends StatefulWidget {
 class ReaderMenuState extends State<ReaderMenuPage> {
   // null safety対応のため、?でnull許容
   File? _image;
+  String? _text;
 
   final _picker = ImagePicker();
 
@@ -65,7 +66,7 @@ class ReaderMenuState extends State<ReaderMenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('日本語OCR'),
+        title: Text('レシート読み取り'),
       ),
       body: Center(
         child: Padding(
@@ -80,7 +81,6 @@ class ReaderMenuState extends State<ReaderMenuPage> {
               if (_image != null) Image.file(_image!, height: 400),
 
               // 画像を取得できたら解析ボタンを表示
-              if (_image != null) _analysisButton(),
               Container(
                   height: 240,
 
@@ -93,10 +93,8 @@ class ReaderMenuState extends State<ReaderMenuPage> {
                         if (_result != null) {
                           // null safety対応のため_result!とする（_resultはnullにならない）
                           return _result!;
-                        } else if (_image != null) {
-                          return 'ボタンを押すと解析が始まります';
                         } else {
-                          return 'OCR（テキスト認識）したい画像を撮影または読込んでください';
+                          return 'レシートを撮影または読み込んでください';
                         }
                       }())))),
             ]),
@@ -108,14 +106,20 @@ class ReaderMenuState extends State<ReaderMenuPage> {
         children: [
           // カメラ起動ボタン
           FloatingActionButton(
-            onPressed: () => _getImage(FileMode.CAMERA),
+            onPressed: () async {
+              await _getImage(FileMode.CAMERA);
+              await _analysis();
+            },
             tooltip: 'Pick Image from camera',
             child: Icon(Icons.camera_alt),
           ),
 
           // ギャラリー（ファイル）検索起動ボタン
           FloatingActionButton(
-            onPressed: () => _getImage(FileMode.GALLERY),
+            onPressed: () async {
+              await _getImage(FileMode.GALLERY);
+              await _analysis();
+            },
             tooltip: 'Pick Image from gallery',
             child: Icon(Icons.folder_open),
           ),
@@ -125,18 +129,14 @@ class ReaderMenuState extends State<ReaderMenuPage> {
   }
 
   // OCR（テキスト認識）開始処理
-  Widget _analysisButton() {
-    return ElevatedButton(
-      child: Text('解析'),
-      onPressed: () async {
-        // null safety対応のため_image!とする（_imageはnullにならない）
-        List<int> _imageBytes = _image!.readAsBytesSync();
-        String _base64Image = base64Encode(_imageBytes);
+  Future _analysis() async {
+    List<int> _imageBytes = _image!.readAsBytesSync();
+    String _base64Image = base64Encode(_imageBytes);
 
-        // Firebase上にデプロイしたFunctionを呼び出す処理
-        HttpsCallable _callable =
-            FirebaseFunctions.instance.httpsCallable('annotateImage');
-        final params = '''{
+    // Firebase上にデプロイしたFunctionを呼び出す処理
+    HttpsCallable _callable =
+        FirebaseFunctions.instance.httpsCallable('annotateImage');
+    final params = '''{
           "image": {"content": "$_base64Image"},
           "features": [{"type": "TEXT_DETECTION"}],
           "imageContext": {
@@ -144,19 +144,17 @@ class ReaderMenuState extends State<ReaderMenuPage> {
           }
         }''';
 
-        final _text = await _callable(params).then((v) {
-          return v.data[0]["fullTextAnnotation"]["text"];
-        }).catchError((e) {
-          print('ERROR: $e');
-          return '読み取りエラーです';
-        });
+    _text = await _callable(params).then((v) {
+      return v.data[0]["fullTextAnnotation"]["text"];
+    }).catchError((e) {
+      print('ERROR: $e');
+      return '読み取りエラーです';
+    });
 
-        // OCR（テキスト認識）の結果を更新
-        setState(() {
-          _result = _text;
-        });
-      },
-    );
+    // OCR（テキスト認識）の結果を更新
+    setState(() {
+      _result = _text;
+    });
   }
 }
 
