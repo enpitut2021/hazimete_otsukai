@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 
 // ChangeNotifierProviderとConsumerウィジェットが使えるようになる
 import 'package:provider/provider.dart';
-import 'package:tobuy/page/ReaderMenuPage.dart';
+import 'package:tobuy/ReaderMenuPage.dart';
 import 'package:tobuy/signup_page.dart';
 import 'package:tobuy/tobuy_page.dart';
 
